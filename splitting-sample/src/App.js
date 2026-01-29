@@ -1,29 +1,30 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import logo from "./logo.svg";
 import "./App.css";
+import loadable from "@loadable/component";
+const SplitMe = loadable(() => import("./SplitMe"), {
+  fallback: <div>Loading...</div>,
+});
 
-class App extends Component {
-  state = {
-    splitMe: null,
+function App() {
+  const [visible, setVisible] = useState(false);
+  const onClick = () => {
+    setVisible(true);
   };
-  handleClick = async () => {
-    const loadedModule = await import("./SplitMe");
-    this.setState({
-      SplitMe: loadedModule.default,
-    });
+  const onMouseOver = () => {
+    SplitMe.preload();
   };
-  render() {
-    const { SplitMe } = this.state;
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p onClick={this.handleClick}>Hello React!</p>
-          {SplitMe && <SplitMe />}
-        </header>
-      </div>
-    );
-  }
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p onClick={onClick} onMouseOver={onMouseOver}>
+          Hello React!
+        </p>
+        {visible && <SplitMe />}
+      </header>
+    </div>
+  );
 }
 
 export default App;
